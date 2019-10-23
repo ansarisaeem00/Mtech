@@ -29,7 +29,7 @@ def matrix_chain_order(p):
 
 def print_optimal_parens(s, i, j):
     if i == j:
-        print ("A_%d" % (i+1))
+        print ("A%d" % (i+1))
     else:
         print ( "(" + str(print_optimal_parens(s, i, s[i][j]-1)) + str(print_optimal_parens(s, s[i][j], j)) + ")")
 

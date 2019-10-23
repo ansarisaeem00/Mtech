@@ -25,7 +25,7 @@ def cutRod(price, n):
 #arr = [1, 5, 8, 9, 10, 17, 17, 20] 
 #arr = input("Insert price of pieces of rod in incresing order")
 arr = list(map(int, input("Insert price of pieces of rod in incresing order ").split()))
-#size = len(arr) 
+#size = len(arr) - 1
 size = int(input("enter the length of rod "))
 print("Maximum Obtainable Value is ", cutRod(arr, size)) 
 

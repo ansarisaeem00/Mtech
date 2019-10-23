@@ -49,7 +49,8 @@ def matrix_product_helper(p, start, end, m, s):
             if q > temp:
                 q = temp
                 s[start][end] = k
- 
+                
+    #print( str("\t"), temp ,str("\t \t \t \t") ,s[start , end])
     m[start][end] = q
     return q
  
@@ -84,4 +85,6 @@ p.append(temp)
 m, s = matrix_product(p)
 print('The number of scalar multiplications needed:', m[1][n])
 print('Optimal parenthesization: ', end='')
+#print(s,n)
+#1
 print_parenthesization(s, 1, n)
