@@ -23,9 +23,11 @@ def cutRod(price, n):
 
 # Driver code 
 #arr = [1, 5, 8, 9, 10, 17, 17, 20] 
-#arr = input("Insert price of pieces of rod in incresing order")
-arr = list(map(int, input("Insert price of pieces of rod in incresing order ").split()))
-#size = len(arr) - 1
 size = int(input("enter the length of rod "))
+arr = input("Insert price of pieces of rod in incresing order")
+#size = int(input("enter the length of rod "))
+#arr = list(map(int, input("Insert price of pieces of rod in incresing order ").split(' ')))
+#size = len(arr) - 1
+
 print("Maximum Obtainable Value is ", cutRod(arr, size)) 
 
