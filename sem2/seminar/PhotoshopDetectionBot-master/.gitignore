@@ -1,0 +1,6 @@
+diffImages/**
+sourceImages/**
+temp/**
+generatedImages/**
+downloadedImages/**
+*.pyc

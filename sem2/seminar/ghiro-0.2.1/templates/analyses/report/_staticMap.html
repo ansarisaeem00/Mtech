@@ -1,0 +1,31 @@
+<div class="alert hide" id="noNet">
+    <strong>Warning!</strong> To use the map feature you need to be connected to internet.
+</div>
+
+<div id="map_canvas" style="width:1100px;"></div>
+
+<div id="mapinfo">
+    {% include 'analyses/report/_staticMapinfo.html' %}
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    internetStatus();
+});
+
+var map = null;
+function initialize() {
+    var pos = new google.maps.LatLng({{ analysis.report.metadata.gps.pos.Latitude|floatformat:6 }}, {{ analysis.report.metadata.gps.pos.Longitude|floatformat:6 }});
+    var mapOptions = {
+        center: pos,
+        zoom: 7,
+        mapTypeId: google.maps.MapTypeId.HYBRID
+    };
+    map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+    marker = new google.maps.Marker({
+        position: pos,
+        map: map,
+        title: "Image location"
+    });
+}
+</script>

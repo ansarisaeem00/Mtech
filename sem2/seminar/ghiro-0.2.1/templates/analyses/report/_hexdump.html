@@ -1,0 +1,15 @@
+<table class="hexview">
+    {% for line in hex_data %}
+        <tr>
+            <td>
+                <code id="address">{{ line.address }}</code>
+            </td>
+            <td>
+                <code>{{ line.hex }}</code>
+            </td>
+            <td>
+                <code>{{ line.text }}</code>
+            </td>
+        </tr>
+    {% endfor %}
+</table>

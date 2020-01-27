@@ -1,0 +1,123 @@
+{% load analyses_tags %}
+
+<div class="box-tab corner-all">
+    <div class="box-header corner-top">
+        <div class="header-control pull-right">
+            <a data-box="collapse"><i class="icofont-caret-up"> </i></a>
+        </div>
+        <ul class="nav nav-pills" id="tab-stat">
+            <li class="active">
+                <a data-toggle="tab" href="#system-stat">Analysis results
+                {% if analysis.report.private %} <small>(flagged as private)</small> {% endif %}</a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#server-stat">Signature results</a>
+            </li>
+        </ul>
+    </div>
+    <div class="box-body">
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="system-stat">
+                <div class="row-fluid">
+                    {% include 'analyses/report/_dashboardAnalysisResult.html' %}
+                </div>
+            </div>
+            <div class="tab-pane fade" id="server-stat">
+                <div class="row-fluid">
+                    {% if analysis.report.signatures %}
+                    <table>
+                        <tr>
+                            <td>
+                                <div id="container" style="min-width: 610px; height: 400px; margin: 0 auto"></div>
+                            </td>
+                            <td>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Severity</th>
+                                            <th>Signatures matched</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="badge badge-success">Low</span></td>
+                                            <td class="text-success right"><b>{{ analysis.report.signatures|count_severity:"1" }}</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge badge-warning">Medium</span></td>
+                                            <td class="text-warning right"><b>{{ analysis.report.signatures|count_severity:"2" }}</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge badge-important">High</span></td>
+                                            <td class="text-error right"><b>{{ analysis.report.signatures|count_severity:"3" }}</b></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <script type="text/javascript">
+                    $(function () {
+                        $('#container').highcharts({
+                            chart: {
+                                plotBackgroundColor: null,
+                                plotBorderWidth: null,
+                                plotShadow: false
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            title: {
+                                text: 'Signatures matched by severity'
+                            },
+                            tooltip: {
+                                pointFormat: '<b>{point.percentage:.1f}%</b></b>'
+                            },
+                            plotOptions: {
+                                pie: {
+                                    allowPointSelect: true,
+                                    cursor: 'pointer',
+                                    dataLabels: {
+                                        enabled: true,
+                                        color: '#000000',
+                                        connectorColor: '#000000',
+                                        format: '<b>{point.name}</b>: {point.y}'
+                                    }
+                                }
+                            },
+                            series: [{
+                                type: 'pie',
+                                name: 'Signatures matched',
+                                data: [
+                                     {
+                                        name: 'Low',
+                                        y: {{ analysis.report.signatures|count_severity:"1" }},
+                                        color: '#468847'
+                                    },
+                                    {
+                                        name: 'Medium',
+                                        y: {{ analysis.report.signatures|count_severity:"2" }},
+                                        color: '#F89406'
+                                    },
+                                     {
+                                        name: 'High',
+                                        y: {{ analysis.report.signatures|count_severity:"3" }},
+                                        color: '#B94A48'
+                                    },
+                                ]
+                            }]
+                        });
+                    });
+                    </script>
+
+                    {% else %}
+                    <div class="alert">
+                        <strong>Warning!</strong> No signature matched.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

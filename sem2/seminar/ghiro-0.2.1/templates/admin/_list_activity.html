@@ -1,0 +1,42 @@
+<table class="table table-bordered table-striped responsive datatables">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Message</th>
+            <th>Category</th>
+            <th>User</th>
+            <th>Source IP</th>
+            <th>Created</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for activity in activities %}
+        <tr>
+            <td>{{ activity.id }}</td>
+            <td>
+                {% if activity.message|length > 75 %}
+                    {{ activity.message|slice:":75" }} ...
+                {% else %}
+                    {{ activity.message }}
+                {% endif %}
+            </td>
+            <td>{{ activity.get_category_display }}</td>
+            <td>{{ activity.user.username }}</td>
+            <td>{{ activity.source_ip }}</td>
+            <td>{{ activity.created_at }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script type="text/javascript">
+$('.datatables').dataTable({
+    "sDom" : '<"top"f>t<"bottom"lp><"clear">',
+    "aaSorting": [[ 0, "desc" ]],
+    "language": {
+        "search": "_INPUT_"
+    }
+});
+
+$('.dataTables_filter input').attr("placeholder", "Search...");
+</script>

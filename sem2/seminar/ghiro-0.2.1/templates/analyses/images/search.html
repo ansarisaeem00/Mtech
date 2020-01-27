@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="span11">
+    <div class="content content-large">
+        <div class="content-header">
+            <h2><i class="icon-search"> </i> Search</h2>
+        </div>
+        <div class="content-breadcrumb">
+            <ul class="breadcrumb">
+                <li>
+                    <a href="/"><i class="icon-home"> </i> Dashboard</a><span class="divider">&rsaquo;</span>
+                </li>
+                <li class="active">
+                    Search
+                </li>
+            </ul>
+        </div>
+        {% include "layout/_searchForm.html" with in_case_id=False %}
+    </div>
+</div>
+{% endblock %}

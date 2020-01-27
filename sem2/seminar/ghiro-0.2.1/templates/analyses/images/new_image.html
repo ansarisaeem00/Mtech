@@ -1,0 +1,137 @@
+    {% extends "base.html" %}
+
+    {% block content %}
+    <div class="span11">
+        <div class="content content-large">
+            <div class="content-header">
+                <h2><i class="icon-briefcase"> </i> Cases</h2>
+            </div>
+            <div class="content-breadcrumb">
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="/"><i class="icon-home"></i> Dashboard</a><span class="divider">&rsaquo;</span>
+                    </li>
+                    <li>
+                        <a href="{% url "analyses.views.list_cases" %}"><i class="icon-briefcase"> </i> Cases</a>
+                        <span class="divider">&rsaquo;</span>
+                    </li>
+                    <li>
+                        <a href="{% url "analyses.views.show_case" case.id "list" %}"><i class="icon-book"> </i>
+                            {% if case.name|length > 70 %}
+                                {{ case.name|slice:":70" }} ...
+                            {% else %}
+                                {{ case.name }}
+                            {% endif %}
+                        </a><span class="divider">&rsaquo;</span>
+                    </li>
+                    <li class="active">
+                        New Image
+                    </li>
+                </ul>
+            </div>
+            <div class="content-body">
+                <div class="row-fluid">
+                    <p>
+                        <div id="uploader"></div>
+                    </p>
+                    <div id="filelist" class="hide">
+                        <strong id="generic_error">
+                            <i class="icon-warning-sign text-error"></i>
+                            Errors:
+                        </strong>
+                        <strong id="server_error" class="hide">
+                            <i class="icon-warning-sign text-error"></i>
+                            Server error: unexpected error, try to reload page and check logs.
+                        </strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Styles #}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/plupload/jquery.plupload.queue.css">
+    {# JS #}
+    <script src="{{ STATIC_URL }}js/plupload/jquery-migrate-1.0.0.js"></script>
+    <script src="{{ STATIC_URL }}js/plupload/elfinder.min.js"></script>
+    <script src="{{ STATIC_URL }}js/plupload/jquery.plupload.queue.js"></script>
+    <script src="{{ STATIC_URL }}js/plupload/plupload.full.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+
+            $("#uploader").pluploadQueue({
+                runtimes : 'html5,flash',
+                url : '{% url "analyses.views.new_image" case.id %}',
+                unique_names: false,
+                multipart: true,
+                file_data_name: 'image',
+                preinit: {
+                    Init: function () {
+                        $('#uploader_container').removeAttr("title");
+                    }
+                },
+                flash_swf_url : '{{ STATIC_URL }}js/plupload/plupload.flash.swf',
+                headers : {'X-Requested-With' : 'XMLHttpRequest', 'X-CSRFToken' : '{{csrf_token}}'}
+            });
+
+            $('form').submit(function(e) {
+                var uploader = $('#uploader').pluploadQueue();
+
+                if (uploader.total.uploaded == 0) {
+                    if (uploader.files.length > 0) {
+                        uploader.bind('UploadProgress', function() {
+                            if (uploader.total.uploaded == uploader.files.length)
+                                $('form').submit();
+                        });
+                        uploader.start();
+                    }
+                    e.preventDefault();
+                }
+            });
+
+            var uploader = $('#uploader').pluploadQueue();
+
+            uploader.bind('FilesAdded', function() {
+                $('.plupload_start').show();
+                $('.result_button').hide();
+            });
+
+            uploader.bind('UploadComplete', function(up) {
+                if (up.total.queued == 0 && uploader.total.uploaded == up.files.length){
+                    window.location.href = "{% url "analyses.views.show_case" case.id "list" %}";
+                }else{
+                    $('.plupload_buttons').append("<a href='{% url 'analyses.views.show_case' case.id 'list' %}' class='btn result_button'>Back</a>").show();
+                    $('.plupload_start').hide();
+                }
+            });
+
+            uploader.bind('FileUploaded', function(up, file, info) {
+                var response = jQuery.parseJSON(info.response);
+                if(response.error){
+                    file.status = plupload.FAILED;
+                    up.trigger('QueueChanged');
+                    $('#filelist').append("<div>" + (file ? " File: " + file.name : "") +
+                            ", Reason: " + response.error.message +
+                            "</div>"
+                    ).show();
+                }else{
+                    $('#generic_error').show();
+                    $('.result_button').hide();
+                }
+            });
+
+            uploader.bind('Error', function(up, err) {
+                $('#filelist').append("<div>" +
+                        (err.file ? " File: " + err.file.name : "") +
+                        "</div>"
+                ).show();
+                $('#server_error').show();
+                $('.result_button').hide();
+            });
+
+        })
+
+    </script>
+
+    {% endblock %}
